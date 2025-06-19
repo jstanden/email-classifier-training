@@ -263,6 +263,50 @@ This will show you exactly what changes are being made to each email with a colo
 
 This ensures consistent preprocessing across your entire pipeline without modifying the core classifier code.
 
+## Deployment
+
+### Production Inference API
+
+For production deployments, you can use the dedicated inference API server that provides a FastAPI-based REST API for email classification:
+
+**Repository**: https://github.com/jstanden/email-classifier-inference/
+
+The inference API offers:
+- **REST API endpoints** for single and batch email classification
+- **Docker containerization** for easy deployment
+- **GPU acceleration** with automatic hardware detection (MPS, CUDA, CPU)
+- **Batch processing** for efficient handling of multiple emails
+- **Health checks** and monitoring capabilities
+- **Interactive documentation** with Swagger UI
+- **Consistent preprocessing** using the same `inference_hook.py` from this training repository
+
+The API is designed to work seamlessly with models trained using this repository, providing a production-ready interface for your email classification models.
+
+### Basic Deployment Workflow
+
+1. **Train your model** using this repository:
+   ```bash
+   python train.py --data_path data/your_emails.jsonl
+   ```
+
+2. **Copy your trained model** to the inference API's `models/` directory
+
+3. **Deploy the inference API** using Docker:
+   ```bash
+   git clone https://github.com/jstanden/email-classifier-inference/
+   cd email-classifier-inference
+   ./deploy.sh run
+   ```
+
+4. **Use the API** to classify emails via HTTP requests:
+   ```bash
+   curl -X POST "http://localhost:8000/classify" \
+        -H "Content-Type: application/json" \
+        -d '{"subject": "Meeting tomorrow", "body": "Please prepare the quarterly report"}'
+   ```
+
+See the [inference API repository](https://github.com/jstanden/email-classifier-inference/) for complete deployment instructions and API documentation.
+
 ## Troubleshooting
 
 ### Model Not Learning
